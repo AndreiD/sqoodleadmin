@@ -4,6 +4,7 @@ import { MIN_ABI } from './components/project/abi';
 import { CONTRACT_ADDRESS } from './components/project/constants';
 import Web3 from 'web3'
 import UnlockMetamask from './components/layout/metamask/UnlockMetamask';
+import Preloader from './components/layout/Preloader';
 
 class App extends Component {
   constructor() {
@@ -16,6 +17,10 @@ class App extends Component {
       isLoading: false,
       hashes: []
     }
+
+    //need to bind the function to have access to this
+
+    this.getBalance = this.getBalance.bind(this)
   }
 
   // On loaded component,
@@ -45,27 +50,29 @@ class App extends Component {
 
   // A loader toggle function
   toggleLoader() {
-    let loader = document.querySelector('div.loader-content')
     if (this.state.isLoading) {
-      loader.style.display = 'none'
+      //loader.style.display = 'none'
       this.setState({ isLoading: false })
     } else {
-      loader.style.display = 'block'
+      //loader.style.display = 'block'
       this.setState({ isLoading: true })
     }
   }
 
-  // Handler of the getBalance button 'onClick' event
-  // Performs a call to the getBalance methods of the smart contract
   async getBalance() {
+    console.log("getting the balance...")
     if (!this.state.isOnEthereum) {
       return window.alert('please connect to metamask before using this app!')
     }
 
     this.toggleLoader()
 
-    const result = await this.state.contractInstance.methods.getBalance().call()
-    await this.setState({ balanceValue: result })
+    try {
+      const result = await this.state.contractInstance.methods.balanceOf("0x000000dE5F9e90CE604Da5FD78ACd6FAE789eCCA").call()
+      await this.setState({ balanceValue: JSON.stringify(result) })
+    } catch (e) {
+      console.log('get balance failed. Failed message: ' + e)
+    }
 
     this.toggleLoader()
   }
@@ -82,13 +89,14 @@ class App extends Component {
     return (
       <div className="App">
         <Navbar />
+        <Preloader show={this.state.isLoading} />
         {error}
-        <h4>Hey, this using the Ethereum blockchain and a basic Smart Contract!</h4>
+        <h4>Hey Smart Contract!</h4>
         <p>
           Try to interact with a basic counter smart contract by updating the counter value and / or increasing its value by using the increment button.
         </p>
         <button className='btn green' onClick={this.getBalance}>Get Balance</button>
-        <div className='col1'>
+        <div className='container'>
           <h2>The balance value</h2>
           <p>{this.state.balanceValue}</p>
         </div>
