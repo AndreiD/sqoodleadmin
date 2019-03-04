@@ -3,14 +3,15 @@ import React from 'react'
 export default function Preloader({ show }) {
   if (show) {
     return (
-      <div class="xcentered preloader-wrapper big active">
-        <div class="spinner-layer spinner-blue">
-          <div class="circle-clipper left">
-            <div class="circle"></div>
-          </div><div class="gap-patch">
-            <div class="circle"></div>
-          </div><div class="circle-clipper right">
-            <div class="circle"></div>
+      <div className="xcentered preloader-wrapper big active">
+        <p>loading...</p>
+        <div className="spinner-layer spinner-blue">
+          <div className="circle-clipper left">
+            <div className="circle"></div>
+          </div><div className="gap-patch">
+            <div className="circle"></div>
+          </div><div className="circle-clipper right">
+            <div className="circle"></div>
           </div>
         </div>
       </div>
