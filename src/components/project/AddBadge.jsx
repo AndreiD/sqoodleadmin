@@ -66,34 +66,20 @@ class AddBadge extends Component {
 
   render() {
     return (
-      <div>
-        <Preloader show={this.state.isLoading} />
-
-        <h1>Add New Badge</h1>
-        <form onSubmit={this.onSubmit}>
-          <div>
-            <label>Name: </label>
-            <br />
-            <input
-              type="text"
-              name="name"
-              onChange={this.onChange}
-              value={this.state.name}
-            />
+      <div className="container">
+        <form className="white" onSubmit={this.onSubmit}>
+          <h5 className="grey-text text-darken-3">Create a New Badge</h5>
+          <div className="input-field">
+            <input type="text" id='title' onChange={this.onChange} />
+            <label htmlFor="title">Badge Title</label>
           </div>
-          <br />
-          <div>
-            <label>badge info (as json): </label>
-            <p>Should have the following format..</p>
-            <br />
-            <textarea
-              name="info"
-              onChange={this.onChange}
-              value={this.state.info}
-            />
+          <div className="input-field">
+            <textarea id="content" className="materialize-textarea" onChange={this.onChange}></textarea>
+            <label htmlFor="content">Badge Metadata</label>
           </div>
-          <br />
-          <button type="submit">SAVE</button>
+          <div className="input-field">
+            <button className="btn btn-large pink lighten-1">Create</button>
+          </div>
         </form>
       </div>
     );

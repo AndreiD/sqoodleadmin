@@ -7,9 +7,9 @@ const Navbar = (props) => {
       <div className="nav-wrapper container">
         <a href="/" className="brand-logo">Sqoodle Admin</a>
         <ul id="nav-mobile" className="right hide-on-med-and-down">
-          <li><Link to="/">Home</Link></li>
-          <li><NavLink to="/add_badge">Add Badge</NavLink></li>
-          <li><NavLink to="/about">About</NavLink></li>
+          <li><Link to="/">HOME</Link></li>
+          <li><NavLink to="/add_badge">ADD BADGE</NavLink></li>
+          <li><NavLink to="/about">ABOUT</NavLink></li>
         </ul>
       </div>
 
