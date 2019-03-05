@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import Preloader from '../layout/Preloader';
 
+import Error from '../layout/Error'
 
 class AddToken extends Component {
   constructor(props) {
@@ -18,6 +19,7 @@ class AddToken extends Component {
       expiry_date: '',
       description: '',
       isLoading: false,
+      errorMessage: null
     };
 
     this.onChange = this.onChange.bind(this);
@@ -29,6 +31,7 @@ class AddToken extends Component {
 
 
   onChange(event) {
+    this.setState({ errorMessage: null }) // close any errors
     const target = event.target;
     const value = target.type === 'checkbox' ? target.checked : target.value;
     const name = target.id;
@@ -60,6 +63,10 @@ class AddToken extends Component {
     // this.props.createPost(post);
   }
 
+  async componentDidMount() {
+
+    this.initMetamaskCallback(window.web3);
+  }
 
 
   async saveToken(token) {
@@ -69,8 +76,8 @@ class AddToken extends Component {
     //   return window.alert('please connect to metamask before using this app!')
     // }
 
-    if (token.type === "" || token.icon === "") {
-      alert("Please fill all the information on the form")
+    if (token.type === "" || token.icon === "" || token.name === "" || token.last_name === "") {
+      this.setState({ errorMessage: "Please fill all the information on the form" })
       return
     }
 
@@ -89,6 +96,54 @@ class AddToken extends Component {
   }
 
 
+  async initMetamaskCallback(web3) {
+    try {
+      web3.currentProvider.publicConfigStore.on('update', this.metamaskUpdateCallback);
+    } catch (e) {
+      console.error(e)
+    }
+  }
+
+
+  metamaskUpdateCallback = ({ selectedAddress, networkVersion }) => {
+
+    console.log('selectedAddress', selectedAddress)
+
+    const checkMinter = async () => {
+      try {
+        const result = await this.state.contractInstance.methods.isMinter(selectedAddress).call()
+        if (result === false) {
+          this.setState({ errorMessage: "only minters are allowed to access this dapp" })
+        }
+      } catch (e) {
+        console.log('isMinter call failed: ' + e)
+      }
+    }
+    checkMinter.call()
+
+
+
+    // let networkName, that = this;
+    // switch (networkVersion) {
+    //   case "1":
+    //     networkName = "Main";
+    //     break;
+    //   case "2":
+    //     networkName = "Morden";
+    //     break;
+    //   case "3":
+    //     networkName = "Ropsten";
+    //     break;
+    //   case "4":
+    //     networkName = "Rinkeby";
+    //     break;
+    //   case "42":
+    //     networkName = "Kovan";
+    //     break;
+    //   default:
+    //     networkName = networkVersion;
+    // }
+  }
 
 
   render() {
@@ -184,6 +239,7 @@ class AddToken extends Component {
         </form>
 
         <Preloader show={this.state.isLoading} />
+        <Error errorMessage={this.state.errorMessage} />
       </div>
     );
   }

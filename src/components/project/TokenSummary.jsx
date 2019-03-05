@@ -11,7 +11,7 @@ const TokenSummary = (props) => {
   }
   return (
     <div className="row">
-      <div className="col s6">
+      <div className="col s6 offset-s3">
         <ul className="collection with-header">
           <li className="collection-header"><h4>{metadata['last_name']} {metadata['first_name']}</h4></li>
           <li className="collection-item"><img style={{ width: '75px', height: "75px" }} src={metadata['icon']} alt="icon"></img></li>
