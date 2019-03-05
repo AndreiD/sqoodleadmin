@@ -5,7 +5,7 @@ import Web3 from 'web3'
 import UnlockMetamask from '../layout/metamask/UnlockMetamask';
 import Preloader from '../layout/Preloader'
 import TokenSummary from './TokenSummary';
-
+import Error from '../layout/Error'
 
 class App extends Component {
   constructor() {
@@ -16,7 +16,8 @@ class App extends Component {
       web3Instance: null,
       isLoading: false,
       token_id: "",
-      token_metadata: ""
+      token_metadata: "",
+      errorMessage: null
     }
 
 
@@ -26,6 +27,7 @@ class App extends Component {
   }
 
   onChange(event) {
+    this.setState({ errorMessage: null }) // close any errors
     const target = event.target;
     const value = target.type === 'checkbox' ? target.checked : target.value;
     const name = target.id;
@@ -81,12 +83,15 @@ class App extends Component {
       await this.setState({ token_metadata: result })
     } catch (e) {
       console.log('get balance failed. Failed message: ' + e)
+      await this.setState({ errorMessage: "No token with this ID found. " + e.toString() })
     }
 
     this.setState({ isLoading: false })
   }
 
   render() {
+
+
     if (!this.state.isOnEthereum) {
       return (
         <div className="App">
@@ -96,7 +101,6 @@ class App extends Component {
     }
     return (
       <div className="App">
-
         <div className="container">
           <form className="col s12">
             <div className="row">
@@ -117,9 +121,10 @@ class App extends Component {
               </div>
             </div>
           </form>
+          <Preloader show={this.state.isLoading} />
+          <TokenSummary metadata={this.state.token_metadata} />
+          <Error errorMessage={this.state.errorMessage} />
         </div>
-        <Preloader show={this.state.isLoading} />
-        <TokenSummary title={this.state.token_id} metadata={this.state.token_metadata} />
       </div>
     );
   }
