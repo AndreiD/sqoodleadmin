@@ -3,7 +3,7 @@ import Navbar from './components/layout/Navbar'
 import { Route, BrowserRouter, Switch } from 'react-router-dom'
 import Home from './components/project/Home'
 import About from './components/About'
-import NewBadge from './components/project/AddBadge';
+import AddToken from './components/project/AddToken';
 
 class App extends Component {
   render() {
@@ -13,7 +13,7 @@ class App extends Component {
           <Navbar />
           <Switch>
             <Route exact path='/' component={Home} />
-            <Route path='/add_badge' component={NewBadge} />
+            <Route path='/add_token' component={AddToken} />
             <Route path='/about' component={About} />
           </Switch>
         </div>

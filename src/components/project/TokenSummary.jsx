@@ -1,6 +1,6 @@
 import React from 'react'
 
-const BadgeSummary = (props) => {
+const TokenSummary = (props) => {
   return (
     <div className="card z-depth-0 project-summary">
       <div className="card-content grey-text text-darken-3">
@@ -12,4 +12,4 @@ const BadgeSummary = (props) => {
   )
 }
 
-export default BadgeSummary
+export default TokenSummary

@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
-import { MIN_ABI } from './abi';
+import { ABI } from './abi';
 import { CONTRACT_ADDRESS } from './constants';
 import Web3 from 'web3'
 import UnlockMetamask from '../layout/metamask/UnlockMetamask';
 import Preloader from '../layout/Preloader'
-import BadgeList from '../project/BadgesList';
+import TokenSummary from './TokenSummary';
 
 
 class App extends Component {
@@ -15,14 +15,29 @@ class App extends Component {
       contractInstance: null,
       web3Instance: null,
       isLoading: false,
-      badges: [{
-        'title': 'the title',
-        'metadata': 'the metadata'
-      }]
+      token_id: "",
+      token_metadata: ""
     }
 
-    //need to bind the function to have access to this
-    this.getBadges = this.getBadges.bind(this)
+
+    this.onChange = this.onChange.bind(this);
+    this.onSubmit = this.onSubmit.bind(this);
+    this.getTokenByID = this.getTokenByID.bind(this);
+  }
+
+  onChange(event) {
+    const target = event.target;
+    const value = target.type === 'checkbox' ? target.checked : target.value;
+    const name = target.id;
+
+    this.setState({
+      [name]: value
+    });
+  }
+
+  onSubmit(e) {
+    e.preventDefault();
+    this.getTokenByID(this.state.token_id)
   }
 
   // On loaded component,
@@ -39,11 +54,11 @@ class App extends Component {
       }
 
       await this.setState({
-        contractInstance: new this.state.web3Instance.eth.Contract(MIN_ABI, CONTRACT_ADDRESS)
+        contractInstance: new this.state.web3Instance.eth.Contract(ABI, CONTRACT_ADDRESS)
       })
-      // await this.setState({
-      //   balanceValue: await this.state.contractInstance.methods.getBalance().call()
-      // })
+      await this.setState({
+        contract_name: await this.state.contractInstance.methods.symbol().call()
+      })
     } catch (e) {
       console.error(e)
       this.setState({ isOnEthereum: false })
@@ -52,8 +67,8 @@ class App extends Component {
 
 
 
-  async getBadges() {
-    console.log("getting the badges...")
+  async getTokenByID(token_id) {
+    console.log("getting the token info for id: " + token_id)
     if (!this.state.isOnEthereum) {
       this.setState({ isLoading: false })
       return;
@@ -62,8 +77,8 @@ class App extends Component {
     this.setState({ isLoading: true })
 
     try {
-      const result = await this.state.contractInstance.methods.balanceOf("0x000000dE5F9e90CE604Da5FD78ACd6FAE789eCCA").call()
-      await this.setState({ balanceValue: JSON.stringify(result) })
+      const result = await this.state.contractInstance.methods.tokenURI(token_id).call()
+      await this.setState({ token_metadata: result })
     } catch (e) {
       console.log('get balance failed. Failed message: ' + e)
     }
@@ -81,8 +96,30 @@ class App extends Component {
     }
     return (
       <div className="App">
+
+        <div className="container">
+          <form className="col s12">
+            <div className="row">
+              <div className="input-field col s6">
+                <input
+                  id="token_id"
+                  name="token_id"
+                  placeholder="Token ID"
+                  onChange={this.onChange}
+                />
+              </div>
+              <div className="input-field col s6">
+                <button
+                  className="btn green"
+                  type="button"
+                  onClick={this.onSubmit}
+                >SEARCH</button>
+              </div>
+            </div>
+          </form>
+        </div>
         <Preloader show={this.state.isLoading} />
-        <BadgeList />
+        <TokenSummary title={this.state.token_id} metadata={this.state.token_metadata} />
       </div>
     );
   }
