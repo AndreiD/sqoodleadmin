@@ -1,13 +1,13 @@
 {
   "main.css": "/sqoodleadmin/static/css/main.eaf1ce7e.chunk.css",
-  "main.js": "/sqoodleadmin/static/js/main.233730e7.chunk.js",
-  "main.js.map": "/sqoodleadmin/static/js/main.233730e7.chunk.js.map",
+  "main.js": "/sqoodleadmin/static/js/main.0d1f60e5.chunk.js",
+  "main.js.map": "/sqoodleadmin/static/js/main.0d1f60e5.chunk.js.map",
   "runtime~main.js": "/sqoodleadmin/static/js/runtime~main.93cf5dff.js",
   "runtime~main.js.map": "/sqoodleadmin/static/js/runtime~main.93cf5dff.js.map",
   "static/js/2.eada0a95.chunk.js": "/sqoodleadmin/static/js/2.eada0a95.chunk.js",
   "static/js/2.eada0a95.chunk.js.map": "/sqoodleadmin/static/js/2.eada0a95.chunk.js.map",
   "index.html": "/sqoodleadmin/index.html",
-  "precache-manifest.e54ef81721964120c08677616fd96c1a.js": "/sqoodleadmin/precache-manifest.e54ef81721964120c08677616fd96c1a.js",
+  "precache-manifest.79e4d06179758ebaabc16a0cb2a21f41.js": "/sqoodleadmin/precache-manifest.79e4d06179758ebaabc16a0cb2a21f41.js",
   "service-worker.js": "/sqoodleadmin/service-worker.js",
   "static/css/main.eaf1ce7e.chunk.css.map": "/sqoodleadmin/static/css/main.eaf1ce7e.chunk.css.map"
 }
