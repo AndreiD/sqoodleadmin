@@ -4,19 +4,19 @@ self.__precacheManifest = [
     "url": "/sqoodleadmin/static/js/runtime~main.93cf5dff.js"
   },
   {
-    "revision": "1034121d0a347deb8232",
-    "url": "/sqoodleadmin/static/js/main.1034121d.chunk.js"
+    "revision": "43f47b77a018da7aa288",
+    "url": "/sqoodleadmin/static/js/main.43f47b77.chunk.js"
   },
   {
     "revision": "eada0a95502d0aae58fc",
     "url": "/sqoodleadmin/static/js/2.eada0a95.chunk.js"
   },
   {
-    "revision": "1034121d0a347deb8232",
+    "revision": "43f47b77a018da7aa288",
     "url": "/sqoodleadmin/static/css/main.eaf1ce7e.chunk.css"
   },
   {
-    "revision": "bd18efa80d7c8459c8616ee5d13980f1",
+    "revision": "56479bb67af8781e3192dc8eb2acb3f7",
     "url": "/sqoodleadmin/index.html"
   }
 ];
