@@ -103,7 +103,7 @@ class App extends Component {
 
               <div className="input-field col s3 offset-s3">
                 <input type="text" id='token_id' onChange={this.onChange} />
-                <label htmlFor="token_id">Token ID</label>
+                <label htmlFor="token_id">Enter Token ID</label>
               </div>
 
 
