@@ -4,6 +4,13 @@ import { Route, BrowserRouter, Switch } from 'react-router-dom'
 import Home from './components/project/Home'
 import About from './components/About'
 import AddToken from './components/project/AddToken';
+import { hot } from 'react-hot-loader/root'
+import { setConfig } from 'react-hot-loader'
+
+setConfig({
+  ignoreSFC: true, // RHL will be __completely__ disabled for SFC
+  pureRender: true, // RHL will not change render method
+})
 
 class App extends Component {
   render() {
@@ -22,4 +29,4 @@ class App extends Component {
   }
 }
 
-export default App;
+export default hot(App);

@@ -1,12 +1,19 @@
 import React, { Component } from 'react';
 import Preloader from '../layout/Preloader';
-
+import Web3 from 'web3'
 import Error from '../layout/Error'
+import { ABI } from './abi';
+import { CONTRACT_ADDRESS } from './constants';
+import InfoBox from '../layout/TransactionHashBox';
 
 class AddToken extends Component {
   constructor(props) {
     super(props);
+
+    var today = (new Date()).toLocaleDateString('en-US');
+
     this.state = {
+      to_address: '',
       type: '',
       token_id: '',
       token_name: '',
@@ -15,16 +22,45 @@ class AddToken extends Component {
       first_name: '',
       issuing_organization: '',
       serial_number: '',
-      issue_date: '',
-      expiry_date: '',
+      issue_date: today,
+      expiry_date: 'no',
       description: '',
       isLoading: false,
-      errorMessage: null
+      errorMessage: null,
+      isMinter: true,
+      web3: null,
+      contractInstance: null,
+      networkName: '',
+      selectedAddress: '',
+      pendingCreateTx: null
     };
 
     this.onChange = this.onChange.bind(this);
     this.onSubmit = this.onSubmit.bind(this);
     this.saveToken = this.saveToken.bind(this)
+
+
+    // Modern DApp Browsers
+    if (window.ethereum) {
+      this.state.web3 = new Web3(window.ethereum)
+
+      try {
+        window.ethereum.enable().then(function () {
+          console.log("User has allowed account access to DApp...")
+        });
+      } catch (e) {
+        console.log("error in metamask initialization: ", e)
+        this.setState({ errorMessage: "you denied access to this DApp from Metamask" })
+      }
+    }
+    // Legacy DApp Browsers
+    else if (window.web3) {
+      this.state.web3 = new Web3(this.state.web3.currentProvider);
+    }
+    // Non-DApp Browsers
+    else {
+      this.setState({ errorMessage: "please install and unlock metamask in order to use this application" })
+    }
 
   }
 
@@ -43,8 +79,10 @@ class AddToken extends Component {
 
   onSubmit(e) {
     e.preventDefault();
+    const uuidv4 = require('uuid/v4');
 
     const token = {
+      to_address: this.state.to_address,
       type: this.state.type,
       token_id: this.state.token_id,
       token_name: this.state.token_name,
@@ -52,7 +90,7 @@ class AddToken extends Component {
       last_name: this.state.last_name,
       first_name: this.state.first_name,
       issuing_organization: this.state.issuing_organization,
-      serial_number: Math.floor(Math.random() * 100000000),
+      serial_number: uuidv4(),
       issue_date: this.state.issue_date,
       expiry_date: this.state.expiry_date,
       description: this.state.description,
@@ -64,7 +102,14 @@ class AddToken extends Component {
   }
 
   async componentDidMount() {
-
+    try {
+      await this.setState({
+        contractInstance: new this.state.web3.eth.Contract(ABI, CONTRACT_ADDRESS)
+      })
+    } catch (e) {
+      console.error(e)
+      this.setState({ errorMessage: "please install and unlock metamask in order to use this application" })
+    }
     this.initMetamaskCallback(window.web3);
   }
 
@@ -72,16 +117,42 @@ class AddToken extends Component {
   async saveToken(token) {
     console.log("saving -> ", token)
 
-    // if (!this.state.isOnEthereum) {
-    //   return window.alert('please connect to metamask before using this app!')
-    // }
-
     if (token.type === "" || token.icon === "" || token.name === "" || token.last_name === "") {
       this.setState({ errorMessage: "Please fill all the information on the form" })
       return
     }
 
     this.setState({ isLoading: true })
+
+
+    var jsontext = '{"type":"' + token.type + '","token_id":"' + token.token_id + '","token_name":"' + token.token_name + '","icon":"' + token.icon + '","last_name":"' + token.last_name + '","first_name":"' + token.first_name + '","issuing_organization":"' + token.issuing_organization + '","serial_number":"' + token.serial_number + '","issue_date":"' + token.issue_date + '","expiry_date":"' + token.expiry_date + '","description":"' + token.description + '"}';
+    console.log('jsontext', jsontext)
+    var encodedData = btoa(jsontext);
+    console.log('encodedData', encodedData)
+
+    try {
+      await this.state.contractInstance.methods.mintWithTokenURI(token.to_address, token.token_id, encodedData).send({
+        from: this.state.selectedAddress,
+        gas: 4000000,
+      }).on("transactionHash", hash => {
+        this.setState({ pendingCreateTx: hash });
+      });
+      // update progress UI
+      this.setState({ isLoading: false })
+      // reset transaction related form, if any
+      //resetForm();
+    }
+    catch (e) {
+      // if user cancel transaction at Metamask UI we'll get error and handle it here
+      console.log(e);
+      this.setState({ errorMessage: e.toString() })
+      // update progress UI anyway
+      this.setState({ isLoading: false })
+    }
+
+
+
+    //var contact = JSON.parse(jsontext);
 
     // try {
     //   const result = await this.state.contractInstance.methods.balanceOf("0x000000dE5F9e90CE604Da5FD78ACd6FAE789eCCA").call()
@@ -108,6 +179,7 @@ class AddToken extends Component {
   metamaskUpdateCallback = ({ selectedAddress, networkVersion }) => {
 
     console.log('selectedAddress', selectedAddress)
+    this.setState({ errorMessage: null })
 
     const checkMinter = async () => {
       try {
@@ -122,27 +194,28 @@ class AddToken extends Component {
     checkMinter.call()
 
 
+    let networkName, that = this;
+    switch (networkVersion) {
+      case "1":
+        networkName = "Main";
+        break;
+      case "2":
+        networkName = "Morden";
+        break;
+      case "3":
+        networkName = "Ropsten";
+        break;
+      case "4":
+        networkName = "Rinkeby";
+        break;
+      case "42":
+        networkName = "Kovan";
+        break;
+      default:
+        networkName = networkVersion;
+    }
 
-    // let networkName, that = this;
-    // switch (networkVersion) {
-    //   case "1":
-    //     networkName = "Main";
-    //     break;
-    //   case "2":
-    //     networkName = "Morden";
-    //     break;
-    //   case "3":
-    //     networkName = "Ropsten";
-    //     break;
-    //   case "4":
-    //     networkName = "Rinkeby";
-    //     break;
-    //   case "42":
-    //     networkName = "Kovan";
-    //     break;
-    //   default:
-    //     networkName = networkVersion;
-    // }
+    that.setState({ networkName, selectedAddress })
   }
 
 
@@ -186,6 +259,12 @@ class AddToken extends Component {
           </p>
 
           <div className="input-field" style={{ marginTop: '40px' }}>
+            <input type="text" id='to_address' onChange={this.onChange} />
+            <label htmlFor="to_address">To Address</label>
+          </div>
+
+
+          <div className="input-field">
             <input type="text" id='token_id' onChange={this.onChange} />
             <label htmlFor="token_id">Token ID</label>
           </div>
@@ -240,6 +319,7 @@ class AddToken extends Component {
 
         <Preloader show={this.state.isLoading} />
         <Error errorMessage={this.state.errorMessage} />
+        <InfoBox infoMessage={'Pending Transaction Hash: ' + this.state.pendingCreateTx} />
       </div>
     );
   }
