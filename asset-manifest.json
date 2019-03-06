@@ -1,13 +1,13 @@
 {
-  "main.css": "/sqoodleadmin/static/css/main.eaf1ce7e.chunk.css",
-  "main.js": "/sqoodleadmin/static/js/main.5f489022.chunk.js",
-  "main.js.map": "/sqoodleadmin/static/js/main.5f489022.chunk.js.map",
+  "main.css": "/sqoodleadmin/static/css/main.8b39c189.chunk.css",
+  "main.js": "/sqoodleadmin/static/js/main.098cb96e.chunk.js",
+  "main.js.map": "/sqoodleadmin/static/js/main.098cb96e.chunk.js.map",
   "runtime~main.js": "/sqoodleadmin/static/js/runtime~main.93cf5dff.js",
   "runtime~main.js.map": "/sqoodleadmin/static/js/runtime~main.93cf5dff.js.map",
-  "static/js/2.eada0a95.chunk.js": "/sqoodleadmin/static/js/2.eada0a95.chunk.js",
-  "static/js/2.eada0a95.chunk.js.map": "/sqoodleadmin/static/js/2.eada0a95.chunk.js.map",
+  "static/js/2.f6a9ba2d.chunk.js": "/sqoodleadmin/static/js/2.f6a9ba2d.chunk.js",
+  "static/js/2.f6a9ba2d.chunk.js.map": "/sqoodleadmin/static/js/2.f6a9ba2d.chunk.js.map",
   "index.html": "/sqoodleadmin/index.html",
-  "precache-manifest.f1c24ae5aee82da2b3a3696a383f4fee.js": "/sqoodleadmin/precache-manifest.f1c24ae5aee82da2b3a3696a383f4fee.js",
+  "precache-manifest.89fb2ff28d5d05985c24d3e9b9145f73.js": "/sqoodleadmin/precache-manifest.89fb2ff28d5d05985c24d3e9b9145f73.js",
   "service-worker.js": "/sqoodleadmin/service-worker.js",
-  "static/css/main.eaf1ce7e.chunk.css.map": "/sqoodleadmin/static/css/main.eaf1ce7e.chunk.css.map"
+  "static/css/main.8b39c189.chunk.css.map": "/sqoodleadmin/static/css/main.8b39c189.chunk.css.map"
 }
