@@ -4,7 +4,7 @@ import Web3 from 'web3'
 import Error from '../layout/Error'
 import { ABI } from './abi';
 import { CONTRACT_ADDRESS } from './constants';
-import InfoBox from '../layout/TransactionHashBox';
+import TransactionHashBox from '../layout/TransactionHashBox';
 
 class AddToken extends Component {
   constructor(props) {
@@ -319,7 +319,7 @@ class AddToken extends Component {
 
         <Preloader show={this.state.isLoading} />
         <Error errorMessage={this.state.errorMessage} />
-        <InfoBox infoMessage={'Pending Transaction Hash: ' + this.state.pendingCreateTx} />
+        <TransactionHashBox hash={this.state.pendingCreateTx} />
       </div>
     );
   }

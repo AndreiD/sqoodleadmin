@@ -6,6 +6,8 @@ import About from './components/About'
 import AddToken from './components/project/AddToken';
 import { hot } from 'react-hot-loader/root'
 import { setConfig } from 'react-hot-loader'
+import Minters from './components/project/Minters';
+import 'materialize-css/dist/css/materialize.min.css';
 
 setConfig({
   ignoreSFC: true, // RHL will be __completely__ disabled for SFC
@@ -21,6 +23,7 @@ class App extends Component {
           <Switch>
             <Route exact path='/' component={Home} />
             <Route path='/add_token' component={AddToken} />
+            <Route path='/minters' component={Minters} />
             <Route path='/about' component={About} />
           </Switch>
         </div>
