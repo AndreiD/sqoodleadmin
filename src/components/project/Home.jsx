@@ -5,7 +5,8 @@ import Web3 from 'web3'
 import Preloader from '../layout/Preloader'
 import TokenSummary from './TokenSummary';
 import Error from '../layout/Error'
-
+import { connect } from "react-redux";
+import { fetchGithubData } from "../../actions/fetchAction";
 
 class App extends Component {
   constructor() {
@@ -24,31 +25,33 @@ class App extends Component {
 
     this.onChange = this.onChange.bind(this);
     this.onSubmit = this.onSubmit.bind(this);
-    this.getTokenByID = this.getTokenByID.bind(this);
 
-
-    // Modern DApp Browsers
-    if (window.ethereum) {
-      this.state.web3 = new Web3(window.ethereum)
-
-      try {
-        window.ethereum.enable().then(function () {
-          console.log("User has allowed account access to DApp...")
-        });
-      } catch (e) {
-        console.log("error in metamask initialization: ", e)
-        this.setState({ errorMessage: "you denied access to this DApp from Metamask" })
-      }
-    }
-    // Legacy DApp Browsers
-    else if (window.web3) {
-      this.state.web3 = new Web3(this.state.web3.currentProvider);
-    }
-    // Non-DApp Browsers
-    else {
-      this.setState({ errorMessage: "please install and unlock metamask in order to use this application" })
-    }
   }
+  //   this.getTokenByID = this.getTokenByID.bind(this);
+
+
+  //   // Modern DApp Browsers
+  //   if (window.ethereum) {
+  //     this.state.web3 = new Web3(window.ethereum)
+
+  //     try {
+  //       window.ethereum.enable().then(function () {
+  //         console.log("User has allowed account access to DApp...")
+  //       });
+  //     } catch (e) {
+  //       console.log("error in metamask initialization: ", e)
+  //       this.setState({ errorMessage: "you denied access to this DApp from Metamask" })
+  //     }
+  //   }
+  //   // Legacy DApp Browsers
+  //   else if (window.web3) {
+  //     this.state.web3 = new Web3(this.state.web3.currentProvider);
+  //   }
+  //   // Non-DApp Browsers
+  //   else {
+  //     this.setState({ errorMessage: "please install and unlock metamask in order to use this application" })
+  //   }
+  // }
 
   onChange(event) {
     this.setState({ errorMessage: null }) // close any errors
@@ -63,36 +66,39 @@ class App extends Component {
 
   onSubmit(e) {
     e.preventDefault();
-    this.getTokenByID(this.state.token_id)
+    //this.getTokenByID(this.state.token_id)
+    console.log('this.state.token_id', this.state.token_id)
+    this.props.dispatch(fetchGithubData(this.state.token_id));
+
   }
 
   async componentDidMount() {
-    try {
-      await this.setState({
-        contractInstance: new this.state.web3.eth.Contract(ABI, CONTRACT_ADDRESS)
-      })
-    } catch (e) {
-      console.error(e)
-      this.setState({ errorMessage: "please install and unlock metamask in order to use this application" })
-    }
+    // try {
+    //   await this.setState({
+    //     contractInstance: new this.state.web3.eth.Contract(ABI, CONTRACT_ADDRESS)
+    //   })
+    // } catch (e) {
+    //   console.error(e)
+    //   this.setState({ errorMessage: "please install and unlock metamask in order to use this application" })
+    // }
   }
 
 
-  async getTokenByID(token_id) {
-    console.log("getting the token info for id: " + token_id)
+  // async getTokenByID(token_id) {
+  //   console.log("getting the token info for id: " + token_id)
 
-    this.setState({ isLoading: true })
+  //   this.setState({ isLoading: true })
 
-    try {
-      const result = await this.state.contractInstance.methods.tokenURI(token_id).call()
-      await this.setState({ token_metadata: result })
-    } catch (e) {
-      console.log('get balance failed. Failed message: ' + e)
-      await this.setState({ errorMessage: "No token with this ID found. " + e.toString() })
-    }
+  //   try {
+  //     const result = await this.state.contractInstance.methods.tokenURI(token_id).call()
+  //     await this.setState({ token_metadata: result })
+  //   } catch (e) {
+  //     console.log('get balance failed. Failed message: ' + e)
+  //     await this.setState({ errorMessage: "No token with this ID found. " + e.toString() })
+  //   }
 
-    this.setState({ isLoading: false })
-  }
+  //   this.setState({ isLoading: false })
+  // }
 
   render() {
     return (
@@ -116,6 +122,16 @@ class App extends Component {
               </div>
             </div>
           </form>
+
+
+          {this.props.data.isFetching ? <h3>Loading...</h3> : null}
+          {this.props.data.isError ? (
+            <h3 className="error">No such Token exists.</h3>
+          ) : null}
+
+          {Object.keys(this.props.data.tokenData).length > 0 ? (
+            <p>{this.props.data.tokenData.bio}</p>
+          ) : null}
           <Preloader show={this.state.isLoading} />
           <TokenSummary metadata={this.state.token_metadata} />
           <Error errorMessage={this.state.errorMessage} />
@@ -125,4 +141,9 @@ class App extends Component {
   }
 }
 
-export default App;
+const mapStateToProps = state => {
+  return {
+    data: state
+  };
+};
+export default connect(mapStateToProps)(App);
