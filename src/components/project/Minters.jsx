@@ -14,6 +14,7 @@ class Minters extends Component {
     this.state = {
       is_minter_address: null,
       new_minter_address: null,
+      erase_token_id: null,
       isLoading: false,
       errorMessage: null,
       isMinter: true,
@@ -25,6 +26,7 @@ class Minters extends Component {
     };
 
     this.onChange = this.onChange.bind(this);
+    this.onSubmitBurn = this.onSubmitBurn.bind(this);
     this.onSubmitCheckMinter = this.onSubmitCheckMinter.bind(this);
     this.onSubmitNewMinter = this.onSubmitNewMinter.bind(this);
     this.renounceMinter = this.renounceMinter.bind(this);
@@ -91,6 +93,34 @@ class Minters extends Component {
       }
     }
     addNewMinter.call();
+
+  }
+
+  onSubmitBurn(e) {
+    e.preventDefault();
+
+    console.log('burning = >', this.state.erase_token_id)
+
+    this.setState({ isLoading: true })
+
+
+    const burnToken = async () => {
+      try {
+        await this.state.contractInstance.methods.burn(this.state.erase_token_id).send({
+          from: this.state.selectedAddress,
+          gas: 1234000,
+        }).on("transactionHash", hash => {
+          this.setState({ pendingCreateTx: hash });
+        });
+        this.setState({ isLoading: false })
+      }
+      catch (e) {
+        console.log(e);
+        this.setState({ errorMessage: e.toString() })
+        this.setState({ isLoading: false })
+      }
+    }
+    burnToken.call();
 
   }
 
@@ -259,26 +289,8 @@ class Minters extends Component {
     }
 
     that.setState({ networkName, selectedAddress })
+
   }
-
-  //   <form className="col s12">
-  //   <div className="row">
-
-  //     <div className="input-field col s3 offset-s3">
-  //       <input type="text" id='token_id' onChange={this.onChange} />
-  //       <label htmlFor="token_id">Enter Token ID</label>
-  //     </div>
-
-
-  //     <div className="input-field col s6">
-  //       <button
-  //         className="btn waves-effect waves-light"
-  //         type="submit"
-  //         onClick={this.onSubmit}
-  //       >SEARCH</button>
-  //     </div>
-  //   </div>
-  // </form>
 
 
   render() {
@@ -299,24 +311,26 @@ class Minters extends Component {
           </div>
         </div>
 
-        <form className="col s12 white" style={{ marginTop: '40px' }} onSubmit={this.onSubmitCheckMinter}>
+        <form className="col s6 white" style={{ marginTop: '40px' }} onSubmit={this.onSubmitCheckMinter}>
           <div className="row">
             <h5 className="grey-text text-darken-3">Check if address is minter</h5>
-            <div className="input-field col s6">
+            <div className="input-field col s3">
               <input type="text" id='is_minter_address' onChange={this.onChange} />
               <label htmlFor="is_minter_address">address</label>
             </div>
-            <div className="input-field col s6">
+            <div className="input-field col s3">
               <button className="btn blue lighten-1 waves-effect waves-light">Check</button>
             </div>
           </div>
         </form>
 
 
+
+
         <form className="col s6 white" onSubmit={this.onSubmitNewMinter}>
           <div className="row">
             <h5 className="grey-text text-darken-3">Add New Minter</h5>
-            <div className="input-field col s6">
+            <div className="input-field col s3">
               <input type="text" id='new_minter_address' onChange={this.onChange} />
               <label htmlFor="new_minter_address">address</label>
             </div>
@@ -327,8 +341,30 @@ class Minters extends Component {
         </form>
 
 
+
+        <form className="col s6">
+          <div className="row">
+            <h5 className="grey-text text-darken-3">Burn Token ID</h5>
+            <div className="input-field col s3">
+              <input type="text" id='erase_token_id' onChange={this.onChange} />
+              <label htmlFor="erase_token_id">Token ID</label>
+            </div>
+
+
+            <div className="input-field col s6">
+              <button
+                className="btn red waves-effect waves-light"
+                type="submit"
+                onClick={this.onSubmitBurn}
+              >ERASE</button>
+            </div>
+          </div>
+        </form>
+
         <p className="col s6 white">You can renounce your minter role by clicking this button</p>
         <button data-target="modalRenounceMinter" className="btn red lighten-1 waves-effect waves-light modal-trigger">Renounce Minter Role</button>
+
+
 
 
         <Preloader show={this.state.isLoading} />
