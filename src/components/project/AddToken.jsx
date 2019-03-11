@@ -21,7 +21,6 @@ class AddToken extends Component {
       last_name: '',
       first_name: '',
       issuing_organization: '',
-      serial_number: '',
       issue_date: today,
       expiry_date: 'no',
       description: '',
@@ -79,7 +78,6 @@ class AddToken extends Component {
 
   onSubmit(e) {
     e.preventDefault();
-    const uuidv4 = require('uuid/v4');
 
     const token = {
       to_address: this.state.to_address,
@@ -90,7 +88,6 @@ class AddToken extends Component {
       last_name: this.state.last_name,
       first_name: this.state.first_name,
       issuing_organization: this.state.issuing_organization,
-      serial_number: uuidv4(),
       issue_date: this.state.issue_date,
       expiry_date: this.state.expiry_date,
       description: this.state.description,
@@ -125,7 +122,7 @@ class AddToken extends Component {
     this.setState({ isLoading: true })
 
 
-    var jsontext = '{"type":"' + token.type + '","token_id":"' + token.token_id + '","token_name":"' + token.token_name + '","icon":"' + token.icon + '","last_name":"' + token.last_name + '","first_name":"' + token.first_name + '","issuing_organization":"' + token.issuing_organization + '","serial_number":"' + token.serial_number + '","issue_date":"' + token.issue_date + '","expiry_date":"' + token.expiry_date + '","description":"' + token.description + '"}';
+    var jsontext = '{"type":"' + token.type + '","token_id":"' + token.token_id + '","token_name":"' + token.token_name + '","icon":"' + token.icon + '","last_name":"' + token.last_name + '","first_name":"' + token.first_name + '","issuing_organization":"' + token.issuing_organization + '","issue_date":"' + token.issue_date + '","expiry_date":"' + token.expiry_date + '","description":"' + token.description + '"}';
     console.log('jsontext', jsontext)
     var encodedData = btoa(jsontext);
     console.log('encodedData', encodedData)
@@ -276,7 +273,7 @@ class AddToken extends Component {
           </div>
 
           <div className="input-field">
-            <input type="text" id='icon' onChange={this.onChange} />
+            <input type="text" id='icon' defaultValue="" onChange={this.onChange} />
             <label htmlFor="icon">Icon URL</label>
           </div>
 

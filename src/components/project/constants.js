@@ -1,1 +1,1 @@
-export const CONTRACT_ADDRESS = "0xba0c82cc237d1bafcfdedc8dade697c40eb71522";  //rinkeby
+export const CONTRACT_ADDRESS = "0x12a1a90c6e8dbb6db6d20eef0ff5ba232a2ec1b4";  //rinkeby
