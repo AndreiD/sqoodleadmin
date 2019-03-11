@@ -17,7 +17,7 @@ class AddToken extends Component {
       type: '',
       token_id: '',
       token_name: '',
-      icon: '',
+      icon: 'https://raw.githubusercontent.com/AndreiD/sqoodleadmin/master/public/def_icon.png',
       last_name: '',
       first_name: '',
       issuing_organization: '',
@@ -133,6 +133,7 @@ class AddToken extends Component {
         gas: 4000000,
       }).on("transactionHash", hash => {
         this.setState({ pendingCreateTx: hash });
+        this.setState({ isLoading: false })
       });
       // update progress UI
       this.setState({ isLoading: false })
@@ -273,8 +274,8 @@ class AddToken extends Component {
           </div>
 
           <div className="input-field">
-            <input type="text" id='icon' defaultValue="" onChange={this.onChange} />
-            <label htmlFor="icon">Icon URL</label>
+            <input type="text" id='icon' defaultValue="https://raw.githubusercontent.com/AndreiD/sqoodleadmin/master/public/def_icon.png" onChange={this.onChange} />
+            <label className="active" htmlFor="icon">Icon URL</label>
           </div>
 
           <div className="input-field">
